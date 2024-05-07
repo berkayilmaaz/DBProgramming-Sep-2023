@@ -1,34 +1,50 @@
 /*----------------------------------------------------------------------------------------------------------------------
-	Sınıf Çalışması: Aşağıdaki tabloları oluşturunuz ve istenenleri yapınız
-	- customers
-		- customer_id
-		- name
-		- address
-	phones		
-		- phone_number
-		- customer_id
-	phone_invoices
-		- id
-		- phone_number
-		- invoice_date
-		- last_pay_date
-		- paid_date (nullable)
-		- total
-	Sorular:
-		- Fatura ödeme merkezinin faturaya ilişkin bilgiler ile müşteri bilgilerinin elde edildiği bir view yazınız. 
-		Fatura ödenmişse bilgi elde edilmeyecektir. View için gerekli gizlemeleri yapınız
+	sqlcmd SQLServer için bir komut yorumlayıcı (command promt) uygulamadır. Bu tarz komut yorumlayıcı programlara 
+	REPL (Read, Evaluate, Print, Loop) da denilmektedir. sqlcmd Windows sistemlerinde genel olarak SQL Server kurulduğunda
+	yüklenir. Programcı isterse sqlcmd'yi hiç SQLServer yüklenmemiş bir sisteme de yükleyebilir. sqlcmd Windows, MacOS X
+	ve Linux sistemlerine yüklenebilmektedir:
+	Link: https://learn.microsoft.com/en-us/sql/tools/sqlcmd/sqlcmd-utility?view=sql-server-ver16&tabs=go%2Cmac&pivots=cs1-bash (21 Ocak 2024 22:08)
+	sqlcmd ile bir IDE olmadan da veritabanı işlemleri yapılabilmektedir. Şüphesiz bu programın görseli çok iyi değildir.
+	Çok karmaşık işlemlerin yapılması görece zahmetlidir. Dolayısıyla programcı açısından gerektiğinde kullanmak üzere
+	öğrenilmelidir. Sürekli kullanılması zaman kaybına yol açabilir. Burada sqlcmd, pratikte gerekebilecek kadar ele
+	alınacaktır. Diğer detaylar için dökumantasyon incelenebilir. sqlcmd'nin bazı yararlı komutları şunlardır:
+	- sqlcmd programı doğrudan çalıştırıldığında "Windows Authentication" bağlantısı olarak komut satırına düşer.
 
-		- Ödenmiş faturaları elde eden bir view yazınız
+	- Komut satırından istenmilen bir T-SQL cümlesi yazıldığında hafızaya alınır. 
 
-		- Fatura ödenmemişse fatura ödeme merkezinin ödeme tamamlandığında view ile update yapabileceği bir SP yazınız
+	- go komutu ile son hafızaya alınmış tüm T-SQL cümleleri sırasıyla çalıştırılır. Hafızadaki cümle hatalı ise uygun
+	hata mesajı	verilir. go komutundan sonra artık hafızada cümle kalmamıştır.
+
+	- sqlcmd q seçeneği ile çalıştırıldığında ilgili cümle veritabanına gönderilir. Örneğin:
+		sqlcmd -q "use testdb; select * from staff"
+	Bir SP parametresiz ise ismi verilerek doğrudan exec yapılabilir. Örneğin
+		sqlcmd -S . -q "sp_databases"
+
+	- sqlcmd programına ilişkin yardım almak için ? seçeneği kullanılabilir
+		sqlcmd -?
+
+	- i seçeneği yolu belirtilen dosya içerisindeki script çalıştırılabilir
+
+	- S seçeneği ile istenilen bir server'a bağlanılabilir
+
+	- o seçeneği ile çıktılar istenilen bir dosyaya yazdırılabilir. Örneğin:
+		sqlcmd -S . -i "staff.sql" -o "result.txt"
+
+	- sqlcmd komut yorumlayıcısı içerisindeyken :r ile dosyadan okuma yapılıp çalıştırılabilir. Örneğin
+		1>:r staff.txt
+
+	- q seçeneği ile bir SP ismi verildiğinde exec işlemi yapılır:
+		
+	- U ve P seçeneleri ile login ve password bilgileri verilerek ilgili server'a bağlanılabilir
+		sqlcmd -S . -U burak -P csd1993
 -----------------------------------------------------------------------------------------------------------------------*/
 
-create view v_older_people_all_info
-as
-select * from people where dbo.get_age(birth_date) > 65
-with check option 
+create login burak with password='csd1993', default_database=testdb
 
-insert into v_older_people_all_info (citizen_id, first_name, last_name, birth_date, marital_status_id, gender_id) values ('12345678915', 'Fatma', 'Selami', '1940-09-13', 1, 1)
+use testdb
 
-select * from v_people_info
+create user burak
 
+use mydb
+
+create user burak
